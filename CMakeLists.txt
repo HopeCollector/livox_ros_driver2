@@ -1,3 +1,6 @@
+set(ROS_EDITION "ROS2")
+set(HUMBLE_ROS "humble")
+
 # judge which cmake codes to use 
 if(ROS_EDITION STREQUAL "ROS1")
 
@@ -207,6 +210,8 @@ else(ROS_EDITION STREQUAL "ROS2")
     add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-parameter)
   endif()
 
+  add_compile_options(-O3)
+
   # Printf version info
   include(cmake/version.cmake)
   project(${PROJECT_NAME} VERSION ${LIVOX_ROS_DRIVER2_VERSION} LANGUAGES CXX)
@@ -246,11 +251,15 @@ else(ROS_EDITION STREQUAL "ROS2")
   )
 
   ## make sure the livox_lidar_sdk_shared library is installed
-  find_library(LIVOX_LIDAR_SDK_LIBRARY liblivox_lidar_sdk_shared.so /usr/local/lib REQUIRED)
+  find_library(LIVOX_LIDAR_SDK_LIBRARY 
+    NAMES liblivox_lidar_sdk_shared.so 
+    PATHS ${CMAKE_SOURCE_DIR}/../../install/livox_sdk2/lib 
+    REQUIRED)
 
   ##
   find_path(LIVOX_LIDAR_SDK_INCLUDE_DIR
     NAMES "livox_lidar_api.h" "livox_lidar_def.h"
+    PATHS ${CMAKE_SOURCE_DIR}/../../install/livox_sdk2/include
     REQUIRED)
 
   ## PCL library
